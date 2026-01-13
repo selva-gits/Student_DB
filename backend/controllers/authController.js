@@ -47,11 +47,15 @@ exports.login = async (req, res) => {
         }
 
         const user = userResult.rows[0];
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
 
-        // Check password
-        const isMatch = await bcrypt.compare(password, user.password_hash);
+        const storedHash = user.password_hash || user.password;
+        const isMatch = storedHash ? await bcrypt.compare(password, storedHash) : false;
+
         if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         // Generate JWT
