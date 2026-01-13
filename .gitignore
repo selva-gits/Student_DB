@@ -1,0 +1,19 @@
+# Ignore node_modules folder
+node_modules/
+
+# Ignore build output
+dist/
+
+# Ignore log files
+*.log
+
+# Ignore database files
+database/*.sql
+
+# Ignore environment files
+.env
+.env.*
+
+# Backend environment files (local only)
+backend/.env
+backend/.env.*
