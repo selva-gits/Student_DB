@@ -31,6 +31,8 @@ function App() {
             }
           />
           <Route path="/" element={<Navigate to="/login" />} />
+          {/* Fallback for any unknown route */}
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>
     </AuthProvider>

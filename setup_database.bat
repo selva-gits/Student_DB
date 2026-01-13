@@ -2,6 +2,20 @@
 setlocal
 REM Database Setup Script for Student ERP System
 REM This script creates the database, schema, and seeds data
+REM NOTE: This script is for LOCAL PostgreSQL only.
+REM       On Render, database setup steps (run these in Command Prompt, NOT PowerShell):
+REM         1) In DB "Connections" tab copy:
+REM              - External Database URL -> used locally with psql for schema/seed.
+REM              - Internal Database URL -> used as DATABASE_URL in backend service.
+REM         2) From your PC run (in d:\Minor_project_student), for example:
+REM              "C:\Program Files\PostgreSQL\16\bin\psql.exe" "<EXTERNAL_DB_URL>" -f database\schema.sql
+REM              "C:\Program Files\PostgreSQL\16\bin\psql.exe" "<EXTERNAL_DB_URL>" -f database\seeds.sql
+REM            (PowerShell users: & "C:\Program Files\PostgreSQL\16\bin\psql.exe" --dbname="<EXTERNAL_DB_URL>" --file="database\schema.sql")
+REM            (Replace <EXTERNAL_DB_URL> with the ACTUAL connection string from Render.)
+REM         3) In Render backend service env vars set:
+REM              DATABASE_URL = "<INTERNAL_DB_URL>" and redeploy.
+REM         4) After redeploy, open the backend Render URL to confirm the JSON health message.
+REM Frontend production build output: .\frontend\dist (Publish Directory on Render)
 
 echo ========================================
 echo Student ERP - Database Setup
@@ -85,4 +99,6 @@ echo You can now:
 echo   1. Start the backend: cd backend && npm start
 echo   2. Start the frontend: cd frontend && npm run dev
 echo.
+REM End of local setup script
+endlocal
 pause
