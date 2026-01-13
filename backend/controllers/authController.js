@@ -40,25 +40,30 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { email, password } = req.body;
 
+    console.log('Login attempt for:', email);
+
     try {
         const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        console.log('User found:', userResult.rows.length > 0);
+
         if (userResult.rows.length === 0) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
         const user = userResult.rows[0];
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
-
         const storedHash = user.password_hash || user.password;
+        console.log('Stored hash exists:', !!storedHash);
+        console.log('Stored hash preview:', storedHash ? storedHash.substring(0, 20) + '...' : 'none');
+
         const isMatch = storedHash ? await bcrypt.compare(password, storedHash) : false;
+        console.log('Password match:', isMatch);
 
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         // Generate JWT
+        console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
         const token = jwt.sign(
             { user_id: user.user_id, role_id: user.role_id },
             process.env.JWT_SECRET,
@@ -75,7 +80,7 @@ exports.login = async (req, res) => {
             }
         });
     } catch (err) {
-        console.error(err);
+        console.error('Login error:', err);
         res.status(500).json({ error: 'Server error' });
     }
 };
